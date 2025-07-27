@@ -1,0 +1,34 @@
+name: Fullstack CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install backend dependencies
+        working-directory: ./be
+        run: |
+          pip install -r requirements.txt
+
+      - name: Start FastAPI (test)
+        working-directory: ./be
+        run: |
+          uvicorn main:app --port 8000 &
+          sleep 3
+          curl http://localhost:8000/graphql || true
+
+      - name: Install frontend dependencies
+        working-directory: ./fe
+        run: |
+          npm install
+
+      - name: Build frontend
+        working-directory: ./fe
+        run: |
+          npm run build

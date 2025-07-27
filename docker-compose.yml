@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  fe:
+    build: ./fe
+    ports:
+      - "3000:3000"
+    depends_on:
+      - be
+
+  be:
+    build: ./be
+    ports:
+      - "8000:8000"
